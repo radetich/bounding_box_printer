@@ -1,6 +1,7 @@
 from csv import reader
 import ast
 import cv2
+import os
 
 #self note: i need to not code at 2 am
 #MUST BE IN FOLDER WITH IMAGE FRAMES AND CSV OF YOLOv5 DETECTIONS
@@ -16,7 +17,10 @@ name = []
 #CSV read driver, this parses the csv and gives us some lists (could have done a dictionary but I like my sanity)
 with open('detections.csv', 'r') as detections:
     detection_list = reader(detections)
+    i = 0
     for index in detection_list:
+        i+=1
+        print("READING FILE", i)
         file_index.append(int(index[1]))
         filename.append(index[0])
         min_pts.append((int(ast.literal_eval(index[2])["xmin"]), int(ast.literal_eval(index[2])["ymin"])))
@@ -24,24 +28,31 @@ with open('detections.csv', 'r') as detections:
         conf.append(ast.literal_eval(index[2])["confidence"])
         name.append(ast.literal_eval(index[2])["name"])
 
-for i in range(len(file_index)):
+for i in range(len(file_index)-1):
+    print("PROCESSING DETECTION", i)
 #DEBUG
-#for i in range(2):
+#for i in range(5470,5477):
     if(file_index[i] == 0):
-        tf = cv2.imread(filename[i]) 
-        start_point = min_pts[i]
-        end_point = max_pts[i]
-        tf = cv2.rectangle(tf, start_point, end_point, (255, 0, 0), 2) 
-        tf = cv2.putText(tf, "Name: "+name[i]+" Confidence: "+ str(100*conf[i])+"%", (int((min_pts[i][0] + max_pts[i][0])/2),int((min_pts[i][1] + max_pts[i][1])/2)), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 0, 255), 2, cv2.LINE_AA)
-        cv2.imwrite(filename[i][90:], tf)
+        if(os.path.isfile(filename[i])): 
+            tf = cv2.imread(filename[i])
+            start_point = min_pts[i]
+            end_point = max_pts[i]
+            tf = cv2.rectangle(tf, start_point, end_point, (255, 0, 0), 2) 
+            tf = cv2.putText(tf, "Name: "+name[i]+" Confidence: "+ str(100*conf[i])+"%", (int((min_pts[i][0] + max_pts[i][0])/2),int((min_pts[i][1] + max_pts[i][1])/2)), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 0, 255), 2, cv2.LINE_AA)
+            cv2.imwrite(filename[i][90:], tf)
+        else:
+            print("FILE NOT FOUND")
 
     else:
-        tf = cv2.imread(filename[i][90:])
-        start_point = min_pts[i]
-        end_point = max_pts[i]
-        tf = cv2.rectangle(tf, start_point, end_point, (255, 0, 0), 2) 
-        tf = cv2.putText(tf, "Name: "+name[i]+" Confidence: "+ str(100*conf[i])+"%", (int((min_pts[i][0] + max_pts[i][0])/2),int((min_pts[i][1] + max_pts[i][1])/2)), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 0, 255), 2, cv2.LINE_AA)
-        cv2.imwrite(filename[i][90:], tf)
+        if(os.path.isfile(filename[i][90:])): 
+            tf = cv2.imread(filename[i][90:])
+            start_point = min_pts[i]
+            end_point = max_pts[i]
+            tf = cv2.rectangle(tf, start_point, end_point, (255, 0, 0), 2) 
+            tf = cv2.putText(tf, "Name: "+name[i]+" Confidence: "+ str(100*conf[i])+"%", (int((min_pts[i][0] + max_pts[i][0])/2),int((min_pts[i][1] + max_pts[i][1])/2)), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 0, 255), 2, cv2.LINE_AA)
+            cv2.imwrite(filename[i][90:], tf)
+        else:
+            print("FILE NOT FOUND")
 
 
 
