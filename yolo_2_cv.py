@@ -40,9 +40,7 @@ for i in range(len(file_index)-1):
     if(file_index[i] == 0):
         if(os.path.isfile(filename[i])): 
             tf = cv2.imread(filename[i])
-            start_point = min_pts[i]
-            end_point = max_pts[i]
-            tf = cv2.rectangle(tf, start_point, end_point, (255, 0, 0), 2) 
+            tf = cv2.rectangle(tf, min_pts[i], max_pts[i], (255, 0, 0), 2) 
             tf = cv2.putText(tf, "Name: "+name[i]+" Confidence: "+ str(100*conf[i])+"%", (int((min_pts[i][0] + max_pts[i][0])/2),int((min_pts[i][1] + max_pts[i][1])/2)), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 0, 255), 2, cv2.LINE_AA)
             cv2.imwrite(filename[i][90:], tf)
         else:
@@ -51,9 +49,7 @@ for i in range(len(file_index)-1):
     else:
         if(os.path.isfile(filename[i][90:])): 
             tf = cv2.imread(filename[i][90:])
-            start_point = min_pts[i]
-            end_point = max_pts[i]
-            tf = cv2.rectangle(tf, start_point, end_point, (255, 0, 0), 2) 
+            tf = cv2.rectangle(tf, min_pts[i], max_pts[i], (255, 0, 0), 2) 
             tf = cv2.putText(tf, "Name: "+name[i]+" Confidence: "+ str(100*conf[i])+"%", (int((min_pts[i][0] + max_pts[i][0])/2),int((min_pts[i][1] + max_pts[i][1])/2)), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 0, 255), 2, cv2.LINE_AA)
             cv2.imwrite(filename[i][90:], tf)
         else:
