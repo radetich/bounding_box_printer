@@ -6,7 +6,9 @@ import os
 #self note: i need to not code at 2 am
 #MUST BE IN FOLDER WITH IMAGE FRAMES AND CSV OF YOLOv5 DETECTIONS
 
-#RAW DATA
+#YOLO BOUNDING BOX PRINTER BY COLE RADETICH
+
+#OUR DATA FRAME FOR RAW INPUTS
 file_index = []
 filename = []
 min_pts = []
@@ -15,23 +17,26 @@ conf = []
 name = []
 
 #CSV read driver, this parses the csv and gives us some lists (could have done a dictionary but I like my sanity)
-with open('detections.csv', 'r') as detections:
-    detection_list = reader(detections)
-    i = 0
-    for index in detection_list:
-        i+=1
-        print("READING FILE", i)
-        file_index.append(int(index[1]))
-        filename.append(index[0])
-        min_pts.append((int(ast.literal_eval(index[2])["xmin"]), int(ast.literal_eval(index[2])["ymin"])))
-        max_pts.append((int(ast.literal_eval(index[2])["xmax"]), int(ast.literal_eval(index[2])["ymax"])))
-        conf.append(ast.literal_eval(index[2])["confidence"])
-        name.append(ast.literal_eval(index[2])["name"])
 
+if(os.path.isfile('detections.csv')): 
+    with open('detections.csv', 'r') as detections:
+        detection_list = reader(detections)
+        i = 0
+        for index in detection_list:
+            i+=1
+            print("READING CSV LINE #", i)
+            file_index.append(int(index[1]))
+            filename.append(index[0])
+            min_pts.append((int(ast.literal_eval(index[2])["xmin"]), int(ast.literal_eval(index[2])["ymin"])))
+            max_pts.append((int(ast.literal_eval(index[2])["xmax"]), int(ast.literal_eval(index[2])["ymax"])))
+            conf.append(ast.literal_eval(index[2])["confidence"])
+            name.append(ast.literal_eval(index[2])["name"])
+else:
+    print("DETECTIONS FILE NOT PRESENT")
+
+#print image driver
 for i in range(len(file_index)-1):
-    print("PROCESSING DETECTION", i)
-#DEBUG
-#for i in range(5470,5477):
+    print("PROCESSING DETECTION #", i)
     if(file_index[i] == 0):
         if(os.path.isfile(filename[i])): 
             tf = cv2.imread(filename[i])
